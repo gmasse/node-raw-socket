@@ -313,15 +313,17 @@ int SocketWrap::CreateSocket (void) {
 	
 	this->poll_fd_ = socket (this->family_, SOCK_RAW, this->protocol_);
 	
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__linux__)
+
 	/**
-	 ** On MAC OS X platforms for non-privileged users wishing to utilise ICMP
+	 ** On MAC OS X and Linux platforms for non-privileged users wishing to utilise ICMP
 	 ** a SOCK_DGRAM will be enough, so try to create this type of socket in
 	 ** the case ICMP was requested.
 	 **
 	 ** More information can be found at:
 	 **
 	 **  https://developer.apple.com/library/mac/documentation/Darwin/Reference/Manpages/man4/icmp.4.html
+     **  https://lwn.net/Articles/420800/
 	 **
 	 **/
 	if (this->poll_fd_ == INVALID_SOCKET && this->protocol_ == IPPROTO_ICMP)
